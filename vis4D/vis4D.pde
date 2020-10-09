@@ -1,5 +1,3 @@
-// public static boolean useNativeSelect = false;
-
 import processing.opengl.*;
 import peasy.*;
 import controlP5.*; // documentation: http://www.sojamo.de/controlP5
@@ -11,8 +9,6 @@ int ignoreSegmentationPixelCountsBelowThisThreshold = 100;
 String runMode = "setSpec"; // "setSpec", "loadData", "waitingForData",  "launchVis", "running"
 // set to "setSpec" to run data specification GUI, or "loadData" to bypass and launch with the default spec
 int timeStepCounter = 0;
-// String ss_dataPath = dataPath("screenshots"); // so that visualiser can access this path
-// String ss_dataPath = sketchPath() + "/data/screenshots/";
 
 ArrayList<String> saveGUIscreenshotAs = new ArrayList<String>(); // allows Visualiser process to trigger GUI screenshot(s) next time it is complete; should usually be empty
 
@@ -26,28 +22,6 @@ void settings(){
   size( 800, 900);
 }
 void setup(){
-  
-  
-  //int c = color(50.2,70.5,90.9,10.0);
-  //println(red(c),"_",green(c),"_",blue(c),"_",alpha(c));
-  //println(c >> 16 & 0xFF,"_", c >> 8 & 0xFF,"_",c & 0xFF,"_",c >> 24 & 0xFF);
-  //for (int i=0;i<4;i++){
-  //  int ch  = c >> 8*((2-i) % 4) & 0xFF;
-  //  println(ch);
-  //}
-  //int c = color(50.2,70.5,90.9,10.0);
-  //print(brightness(c));
-
-  
-  //String ft = "d12.3a";
-  //Float fl  = float(ft);
-  //Integer i = int(ft);
-  //println(ft+" ; "+fl+" ; "+i);
-  //println(Float.isNaN(fl));
-  //println(fl.isNaN());
-  //println(ft.equals(fl.toString()));
-  
-  //print(1/0);
   
   frame.setResizable(true);
   // optionally bypass specGUI by setting runMode="lauchVis" above, and either hard code spec below or skip direct to loading spec from file
@@ -72,9 +46,7 @@ void launch_vis(){
   PApplet.runSketch(args, visualiser);
 }
 
-// void saveScreen(String path){saveFrame(path);} // allows saveFrame to be called on main process window from within a subprocess (Visualiser)
-
-// forward keyboard input to visualiser
+// forward keyboard input to visualiser, allowing key commands to work when either window is active
 // exception for printscreen command - causes crash when forwarded
 void keyPressed(){
   if (runMode.equals("setSpec") || visualiser==null) return;

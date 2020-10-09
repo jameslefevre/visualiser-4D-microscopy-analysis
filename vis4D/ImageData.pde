@@ -1,17 +1,16 @@
 /*
 ImageData contains all image and object data for a single time step/stack, including references from objects to the containing tracks (which of course are not time-specific).
-3 key size parameters which are stored in parent (Dataset parentDataset): the number of segmentation models (segmentationNames.length = numSegs), the number of object/track analyses applied to each segmentation (objectAndTrackNames.length = numObs), and the number of slices (sliceCount).
+Each ImageData instance is expected to be contained in the main Dataset object, and is linked back via the parentDataset field
+This is used to access metadata, including 3 key size parameters: the number of segmentation models (segmentationNames.length = numSegs), the number of object/track analyses applied to each segmentation (objectAndTrackNames.length = numObs), and the number of slices (sliceCount).
 Thus the data is fully rectangular in layout, but not all data needs to be present (null data objects should be handled safely). The data compenents are
 - Single image stack for original image
-- segmented and pron map stack for each segmentation
+- segmented and prob map stack for each segmentation
 - For each seg/object combination, a collection of Objects arranged in a hashmap by class then id (global for the current time step / ImageData object)
 
-In the case where we consider multiple tracks based on the same object description, the only difference in the ImageData object will be in Object.trackNode; as long as they are listed consecutively in the DatasetSpec, the loading routine detects this and clones objects (all prior to associating with tracks): 
+In the case where we consider multiple tracks based on the same object description, the only difference in the ImageData object will be in Object.trackNode; 
+as long as they are listed consecutively in the DatasetSpec, the loading routine detects this and clones objects (all prior to associating with tracks): 
 this should lead to sharing of contained objects, in particular the expensive ObjectMesh.
-
 */
-
-
 
 class ImageData {
   Dataset parentDataset;

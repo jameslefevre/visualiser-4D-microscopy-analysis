@@ -1,5 +1,6 @@
-// See bottom of Visualiser tab for higher level methods
-// But try to put as much as possible into Track and TrackNode methods
+// simple classes used for track representation - Track and TrackNode
+// contains constructors and a few miscellaneous methods
+// methods to display tracks are not included - see Visualiser
 
 class Track{
   int id;

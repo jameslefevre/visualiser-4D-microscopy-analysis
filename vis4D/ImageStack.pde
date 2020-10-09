@@ -1,4 +1,9 @@
-// this tab includes addition functions on ImageStack and PImage at bottom, outside of class
+// Processing does not support 3D voxel images, so this is a limited implementation for our purposes
+// does not e.g check/ensure same shape for each slice
+
+// this tab includes additional functions on ImageStack and PImage at bottom, outside of class definition
+
+// methods to display the ImageStack are not included - see Visualiser
 
 class ImageStack {
   PImage[] im;
@@ -95,7 +100,6 @@ class ImageStack {
     }
   }
 
-  // replace copyImageStack
   ImageStack clone(){
     ImageStack st = new ImageStack();
     st.im = new PImage[im.length];

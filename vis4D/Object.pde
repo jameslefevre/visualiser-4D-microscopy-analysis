@@ -1,3 +1,8 @@
+// simple classes used for object representation - overall class OBJECT, which contains Skeleton and ObjectMesh
+// contains constructors and a few miscellaneous methods
+// methods to display objects are not included - see Visualiser
+
+
 class OBJECT{
   int id;
   int classNum;
@@ -19,7 +24,6 @@ class OBJECT{
     classNum = _classNum;
     voxels = _voxels;
     adjacencies = new HashMap<OBJECT, Integer>();
-    // skel = new Skeleton();
   }
   
   OBJECT clone(){
@@ -49,8 +53,6 @@ class OBJECT{
     return true;
   }
 }
-
-// object functions
 
 class Skeleton{
   Table table;

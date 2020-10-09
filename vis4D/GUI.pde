@@ -1,6 +1,6 @@
-// This tab is in charge of (most) global state (what to show and how), controlled via controls on the primary window (visualiser window is in a subprocess, an inner class also inheriting from PApplet)
-// State may also changed via keyboard input (see Visualiser.keyPressed()); mostly this acts via the controls, but there are also "hidden" features (minor / experimental) which work via variables in Visualiser class.
-
+// After the data selection and loading step, the gui defined here runs on the main window. It is in charge of (most) global state (what to show and how). 
+// The visualiser window is in a subprocess, an inner class also inheriting from PApplet)
+// State may also changed via keyboard input (see Visualiser.keyPressed()); mostly this acts via the GUI controls, but there are also "hidden" features (minor / experimental) which work via variables in Visualiser class.
 
 // GUI implemented with ControlP5 library:
 // http://www.sojamo.de/libraries/controlP5/reference/index.html
@@ -580,68 +580,5 @@ void gui(boolean makeControls) {
     removeTrackSelection.bringToFront();
   }
   
-  
 }
    
-    
-// ************************************************** EXPLICIT GUI METHODS **************************************************************
-
-void toggleImageObjects() {
-  toggleSwitch("showObjects");
-  toggleSwitch("showImage");
-}
-
-void toggleSwitch(String name) {
-  Button b = (Button) cp5.get(name);
-  if (b.isOn()) {
-    b.setOff();
-  } else {
-    b.setOn();
-  }
-}
-
-
-void showGammaTransform(boolean val){
-  println(val);
-  showGammaTransform = val;
-  if (!val){return;}
-  boolean recalc = false;
-  if (spec.logGammaRange[2] != logGamma){
-    spec.logGammaRange[2] = logGamma;
-    recalc = true;
-  }
-  for (int imageNumber : dataset.timeSteps){
-    ImageData id = dataset.imageDatasetsByTimeStep.get(imageNumber); 
-    if (id==null){continue;}
-    if (recalc || id.imgAdjusted == null){
-      id.calculateGammaAdjustedImage(exp(logGamma));
-    }
-  } 
-}
-
-void Add_Track(String input){
-  println("Adding track selection "+input);
-  //int val = Integer.valueOf(input);
-  Integer val = int(input);
-  println(input+" "+val);
-  if (!input.equals(val.toString())){
-    return;
-  }
-  println("Adding track id " + val);
-    selectedTracks.add(val);
-    removeTrackSelection.addItem(input,true);
-    removeTrackSelection.setSize(50,min(200,20+20*selectedTracks.size()));
-  }
-  
-  
-
-  
-void change_timeRangeRadius(String input){
-  int v = int(input);
-  if (input.equals(Integer.toString(v))){
-    timeRangeRadius = v;   
-  }
-  }  
-
-// see 2nd example, http://www.sojamo.de/libraries/controlP5/reference/index.html
-// for objectTypesDisplayed

@@ -1,5 +1,7 @@
 // methods that are triggered in GUI or GUIspec
-
+// controlEvent is run automatically as part of the ControlP5 system, handling many events from the active ControlP5 instance
+// other events (depending on the control and event type) are dispatched directly to handler methods without required code in controlEvent
+// these other handler methods are given below
 
 void controlEvent(ControlEvent theEvent) {
   
@@ -92,8 +94,6 @@ void controlEvent(ControlEvent theEvent) {
     }
   }
   
-  
-  
   //if (theEvent.isController()){
   if (parentClassControl != null) parentClassControl.eventHandler(theEvent);
   if (objectThresholdsControl != null) objectThresholdsControl.eventHandler(theEvent);
@@ -142,13 +142,70 @@ void controlEvent(ControlEvent theEvent) {
       }
     }
   }
-  
-  
-  
-  if (runMode.equals("setSpec")){
-      print("event!");
-    }
 }
+
+// *********************************************************************** GUI CONTROL HANLDER METHODS ************************************************************************
+
+void toggleImageObjects() {
+  toggleSwitch("showObjects");
+  toggleSwitch("showImage");
+}
+
+void toggleSwitch(String name) {
+  Button b = (Button) cp5.get(name);
+  if (b.isOn()) {
+    b.setOff();
+  } else {
+    b.setOn();
+  }
+}
+
+
+void showGammaTransform(boolean val){
+  println(val);
+  showGammaTransform = val;
+  if (!val){return;}
+  boolean recalc = false;
+  if (spec.logGammaRange[2] != logGamma){
+    spec.logGammaRange[2] = logGamma;
+    recalc = true;
+  }
+  for (int imageNumber : dataset.timeSteps){
+    ImageData id = dataset.imageDatasetsByTimeStep.get(imageNumber); 
+    if (id==null){continue;}
+    if (recalc || id.imgAdjusted == null){
+      id.calculateGammaAdjustedImage(exp(logGamma));
+    }
+  } 
+}
+
+void Add_Track(String input){
+  println("Adding track selection "+input);
+  //int val = Integer.valueOf(input);
+  Integer val = int(input);
+  println(input+" "+val);
+  if (!input.equals(val.toString())){
+    return;
+  }
+  println("Adding track id " + val);
+    selectedTracks.add(val);
+    removeTrackSelection.addItem(input,true);
+    removeTrackSelection.setSize(50,min(200,20+20*selectedTracks.size()));
+  }
+
+void change_timeRangeRadius(String input){
+  int v = int(input);
+  if (input.equals(Integer.toString(v))){
+    timeRangeRadius = v;   
+  }
+  }  
+
+// see 2nd example, http://www.sojamo.de/libraries/controlP5/reference/index.html
+// for objectTypesDisplayed
+
+
+// *********************************************************************** GUIspec CONTROL HANLDER METHODS ************************************************************************
+
 void selectLookupFolder(File fileSelection){
   if (fileSelection != null){spec.filenameLookupFolder  = fileSelection.getAbsolutePath();}
   spec.init();
@@ -197,7 +254,6 @@ void saveSpec(){
   println("save spec to JSON");
   File dir  = new File(dataPath("data_selections")); // TODO: better solution than hardcoded path here
    selectOutput("Select a dataset specification file (JSON):", "saveSpecToSelectedFile",dir);
-   
 }
 void saveSpecToSelectedFile(File selection) {
   if (selection == null) {
@@ -210,7 +266,7 @@ void saveSpecToSelectedFile(File selection) {
 
 void launch(){
   // The point is to run launch_vis, but running here directly causes an error with ControlP5
-  // I think because I'm removing a control within a child process of the same control
+  // because (I think) it involves removing the current controls within a child process of one of those controls
   // So instead set runMode to trigger launch_vis from draw() 
   spec.saveToJSON(dataPath("data_selections/lastLoaded.json"));
   runMode="loadData";
@@ -218,7 +274,6 @@ void launch(){
 
 
 // ********************************** toggles: loadImageData loadObjectData loadTracks  **********************************
-
 
 void loadImageData_toggle(){
   spec.loadImageData = !spec.loadImageData;

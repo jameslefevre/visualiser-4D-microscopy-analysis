@@ -3,14 +3,12 @@
 // uses ImageData and Track objects, which include more methods
 // current state (controlling what to show and how) stored in GUI
 
-
-
 class Dataset {
   
-  // metadata /  etc ****************************************
+  // metadata  ****************************************
   
   String title=null;
-  ArrayList<String> stackNames; // these are filenames, but could be made to be different (new setup code)
+  ArrayList<String> stackNames; // these are filenames
   ArrayList<String> segmentationNames;
   ArrayList<String> objectAndTrackNames;
   int[] objectClasses;
@@ -24,17 +22,23 @@ class Dataset {
   float[] positionOffSetForMultiTimesteps; 
   
   HashMap<Integer,Integer> segmentationColours;
-  //   Integer c = color(2,3,4,0);
-
+  
   
   // image and object data ****************************************
   
   HashMap<Integer,ImageData> imageDatasetsByTimeStep; 
-  // following track data structure parallel to ImageData.objectSetsByClass, but operates across full time range
-  // The time steps included in tracks may not be loaded 
   HashMap<Integer, HashMap<Integer, Track>>[][] trackSetsByClass; 
-  // key1= class, key2= trackId (to retain option of fast lookup by id); indices are CI and object set
+  // each value of imageDatasetsByTimeStep contains the complete image and object information for one time step, except for tracks
+  // trackSetsByClass has a parallel data structure to the ImageData.objectSetsByClass values, but covers all time steps:
+  //  an array indexed by segmentation then object representation version, which gives a dictionary lookup by class
+  // track information is mapped onto the objects in setup, as well as being used directly in the display
+ 
+  // Each full track file is loaded even if the main data is only loaded for some of the time steps.
+  // this has no consequence except for a small cost in load time and memory use
+  
+  
   HashMap<Integer, HashMap<Integer, Track>> tracksByClass() {   
+    // gives 
     if (currentObjectSet == null || trackSetsByClass == null || currentClassifiedImage == null) {return(null);}
     int currentCI = (int) currentClassifiedImage.getValue();
     int k = (int) currentObjectSet.getValue();

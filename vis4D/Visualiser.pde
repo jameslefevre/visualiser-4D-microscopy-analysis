@@ -1,3 +1,7 @@
+// An instance of this PApplet subclass is run as a subprocess
+// It is the actual visualisation window
+// As well as the standard setup(), draw(), and keyPressed() methods, this class includes all code for drawing images and objects to screen
+
 public class Visualiser extends PApplet {
 
   PeasyCam cam;

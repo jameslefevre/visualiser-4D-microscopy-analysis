@@ -1,5 +1,6 @@
 
-// simple display showing progress loading data, to be shown between specGui and gui
+// ******************* simple display showing progress loading data, to be shown between main specGUI and GUI interfaces *******************
+
 void progBar(String name, int count, int total, int x, int y, int barOffset, int barHeight, int barLength){
   fill(200);
   text(name + ": " + count + " / " + total + " loaded", x, y);
@@ -41,7 +42,9 @@ void loadProgressDisplay(){
  }
 }
 
-// GUI for selecting / editing spec
+// 
+
+// ************************************** main specGUI interface: GUI for selecting / editing spec **************************************
 
 
 // ******************* GLOBAL STATE - STATEFULL GUI OBJECTS AND VARIABLES LINKED TO CONTROLS *******************************
@@ -181,9 +184,7 @@ void specGui(boolean makeControls) {
      .setColorBackground(color(0,75,150))
      ;
      
-  }
-  
-     
+  }     
      
    // ********************************** dataset path and title **********************************
    
@@ -687,11 +688,6 @@ void specGui(boolean makeControls) {
      ;
   }
   if (makeControls){
-    //if (parentClassControl!=null){parentClassControl.remove();}
-    //if (objectThresholdsControl!=null){objectThresholdsControl.remove();}
-    //if (objectColorsControl!=null){objectColorsControl.remove();}
-    //if (meshColoursControl!=null){meshColoursControl.remove();}
-    //if (trackColoursControl!=null){trackColoursControl.remove();}
     parentClassControl = new IntMapControl(spec.parentClasses,spec.objectClasses, "parentClassControl", x_colors+120, y_colors+35, classBoxWidth,15,classBoxGap,cf1);
     objectThresholdsControl = new IntFloatMapControl(spec.objectThresholds,spec.objectClasses, "objectThresholdsControl", x_colors+120, y_colors+55, classBoxWidth,15,classBoxGap,cf0);
     objectColorsControl = new ColorControl(spec.classColours,spec.objectClasses, "objectColorsControl", x_colors+120, y_colors+75, classBoxWidth,classBoxHeight,classBoxGap,cf0);

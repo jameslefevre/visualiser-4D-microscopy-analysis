@@ -20,7 +20,7 @@ class DatasetSpec{
   ArrayList<String> objectfolders=new ArrayList<String>(); 
   ArrayList<String> trackNames=new ArrayList<String>();
   int[] trackTimeOffsets=null; // option to add const offset to time values in each track file (to deal with off-by-one issues)
-  String probMapsSubfolder="probability_maps"; // probMap
+  String probMapsSubfolder="probability_maps";
   String segsSubfolder="segmented";
   ArrayList<String> stackNames;
   int slicePadNumber=4;
@@ -38,30 +38,23 @@ class DatasetSpec{
   String[] filenameStackNumberStartStopSubstrings = {"-t","-e"};
   String filenameLookupFolder;
 
-  
-  // currently params below plus objectClasses, parentClasses not in GUI
   // image display settings
   float[] positionOffSetForMultiTimesteps = {-70,0,120}; // {50,0,120}; // used for act4 etc 
   float[] logGammaRange = {-1.5,1.5,0.7}; //last number is initial value
   boolean generateBlendedImages = false;
   boolean loadProbMaps = true;
-  
-  
   int maxChannelPercentageThreshold=20; // if max non-background class prob is below this value, we make voxel fully transparent
   
   // object display settings
   // values are selected from arrays using class id as index, so arrays need to have length max(classId)+1
   // typically class 0 is background so first value in eash array is dummy
  
-  //int[] meshClasses = {1,2,3,4};
   HashMap<Integer,Integer> meshColours = intMap(new int[]{1,2,3,4},new int[]{color(79,200,130),color(200,10,10),color(10,10,200),color(180,10,180)});
-  //int[] skeletonClasses = {1};
   HashMap<Integer,Integer> classColours = intMap(new int[]{1,2,3,4},new int[]{color(79,255,130,150),color(255,10,10,200),color(10,10,255,220),color(255,10,255,200)});
   // I was supporting an alternate color scheme for end and branch points, leaving this here in case I want them back:
   //HashMap<Integer,Integer> meshColoursHighlight = intMap(new int[]{1,2,3,4},new int[]{color(150,250,130),color(250,100,10),color(100,100,200),color(200,100,200)});  
   //HashMap<Integer,Integer> classColoursHighlight = intMap(new int[]{1,2,3,4},new int[]{color(150,250,130,250),color(250,100,10,250),color(100,100,200,250),color(200,100,200,250)});
   HashMap<Integer,Float> objectThresholds = intFloatMap(new int[]{1,2,3,4},new float[]{5000.0,75.0,500.0,500.0}); 
-  
   HashMap<Integer,Integer> trackColours = intMap(new int[]{1,2,3,4},new int[]{color(200, 200, 10),color(200, 200, 10),color(200, 200, 10),color(200, 200, 10)});
   
   // convenience function used to define maps above:
@@ -235,6 +228,9 @@ class DatasetSpec{
   
 }
 
+
+// ***** utlity methods for dataset spec
+
 float[] ensureFloatTripleDefault1(float[] x){
   if (x != null && x.length==3){return x;}
   float[] y = new float[]{1.0,1.0,1.0};
@@ -331,8 +327,6 @@ ArrayList<String> JSON_to_StringArrayList(JSONArray js){
 }
 
 // methods for setting up DatasetSpec
-
-
 
 DatasetSpec loadSpecFromJSON(String path){
   spec = new DatasetSpec();

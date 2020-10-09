@@ -1,15 +1,20 @@
+## 4D Visualiser for microscopy analysis
+
 This visualiser is designed for the easy comparison of a 4d image dataset with one or more multiclass segmentations of the dataset and one or more renderings of each segmentation into object and track descriptions (object positions and sizes, meshes, track identifiers etc). While designed to visualise the outputs of a specific workflow, to facilitate broader use we provide a full specification of the data expected.
+
+### Setup and run application
+
+Source code is provided on [github](https://github.com/jameslefevre/visualiser-4D-microscopy-analysis). The contained folder vis4D is a [Processing 3](https://processing.org/) sketch (Java version). Processing runs on Windows, Mac and Linux and is free to download from [here](https://processing.org/download/) and installed locally without admin rights. Copy the entire repository or the folder vis4D into the Processing sketchbook folder, then run Processing and load using File > Sketchbook. The sketch can then be run using the button at the top left. It may also be compiled for Windows or Linux using File > Export Application.
+
+Before using the application, data to be visualised should be saved in an accessible location using the format and file layout described below (Data specification).
+
+The subfolder /data/data_selections within the vis4D sketch or application folder contains JSON files specifying data selections, but the actual data to be visualised should be stored separately.
 
 compile this doc in linux:  pandoc -o visualiser_manual.html visualiser_manual.md
 
-### Setup
+### Data Specification:
 
-The application is provided in compiled form for Windows and Linux. Copy the appropriate folder for your system (e.g. application.linux64) to your local disk, and lauch by running the executable stack_vis_3D in this folder. The subfolder /data/data_selections contains JSON files specifying data selections, but the actual data to be visualised should be stored separately.
-
-Alternatively, install [Processing 3](https://processing.org/download/), copy the source code folder into the sketchbook, launch Processing, and open from the sketchbook. The code can be easily edited and run from this environment. 
-
-
-### Data specification:
+#### File Layout
 
 The overall data is expected to be "rectangular" in the following sense, but is tolerant of incomplete data: 
  - the x,y,z,t dimensions are the same across the original image and all segmentations and corresponding probability maps
@@ -36,19 +41,19 @@ Where
 - stackName ranges over the set of filenames for the 3D image stacks, each corresponding to a time step in the sequence (see "Data selection" section for stackName to time step mapping).
 - sliceNumber is an integer ranging from 0 to n-1, padded with zeros on the left to length p, where n is the z dimension (slices per image stack) and the padded size p defaults to 4 but can be reset in the JSON data selection file (parameter slicePadNumber).
 - segmentationName and objectDescriptionName each range over a specified set of 1 or more names
-- the three special path extensions have the following defaults, but can be modifed
+- the three special path extensions have the following defaults, but can be modifed (see Data Selection section below)
 	original image extension = deconv
 	segmentation extension = segmented
 	probability map extension = probability_maps
 - track name must be specified
 
 
-#### Image data format
+#### Image Data Format
 
 As shown above, all image data is expected as png images, each representing an x-y slice for a specified time and z value. This should be a single-channel 8-bit image for the raw data, and RGB for segmentation and probability map images (8 bits per channel). Transparency is not expected, but will be added to the background, so the background segmentation class must be represented by black (0).
 
 
-#### object data format
+#### Object Data Format
 
 The object representation is stored in 5 types of file (objectStats.txt, objectAdjacencyTable.txt, objectMeshes.obj, objectSkeletons.csv for each time step, plus the track file which spans time steps). The objectStats file is used to link data, and is required to allow any object data to be displayed. Other files can be skipped without repercussions beyond the absence of the data they contain. All data is linked by object id, which is unique at each time step (across all classes). These objects are not quite the same as track "nodes", which are the basic element of the track data representing a structure at a given time step (each track consists of a sequence of nodes at consecutive time steps). Each node consists of one or more objects. The reason for this difference is that the tracking algorithm may recombine objects of the same class (generally touching objects, split by the watershed split algorithm) in an integrated tracking/merging process. This is to allow the sharing of information across time to influence the final delineation of structures, improving consistency and tracking of structures. Other object information is generated separately for each time, and prior to the tracking algorithm. 
 
@@ -68,7 +73,7 @@ id must be unique across all objects in all classes at the given time, and corre
 
 Holds information on adjacent/touching objects, across all classes.
 Each row should contain 3 integer values, separated by commas; no header row is expected or allowed.
-Each row is interpreted as id1,id2,adjacency, where id1 and id2 correspond to id values in objectStats.txt, and adjacency is some quantification of the adjacency. The order of id1 and id2 does not matter, and each pair of adjacent objects should appear exactly once.
+Each row is interpreted as id1,id2,adjacency, where id1 and id2 correspond to id values in objectStats.txt, and adjacency is some quantification of the adjacency (e.g. contact area). The order of id1 and id2 does not matter, and each pair of adjacent objects should appear exactly once.
 
 
 **objectMeshes.obj**
@@ -132,25 +137,59 @@ The final panel contains some options which are likely to be edited less frequen
 
 After the data selection is made and the visualiser has been launched, the interface allows you to select which data elements to display (to load new data, it is necessary to restart the app). 
 
+The top section is used to select the overall data set (image stack and the segmentation and object representation versions). There is a section at the bottom right to allow multiple stacks (time steps) to be displayed at once. The remainder of the controls are used to select the data elements to show. Image data controls are on the left, while object data controls are on the right, with a master switch at the top of each section. There is a toggle button between these master controls to allow instant switching between image and object representations. Details are given below for each of these sections.
+
+
+#### Select data set
+
 The top section specifies the data set to display. The horizontal slider at the top selects the time step (step through with keys , and .). Below the slider, the radio button on the left selects the segmentation model to show (if more than one segmentation has been loaded), while the radio button on the right selects which object and track representation of this segmentation to show (again, if more than one has been loaded). 
+
+
+#### Multi-time display
 
 In the bottom-right corner, the "Multiple Times" toggle allows equivalent data from multiple consecutive time steps to be shown at once, with a specified spatial offset between consecutive time steps. This is designed to display tracks in particular. Showing many time steps may be resource intensive as well as hard to follow, depending on what data is displayed.
 
-The rest of the interface controls which data elements to display. Image data controls are on the left, while object data controls are on the right, with a master switch at the top of each section. There is a toggle button between these master controls to allow instant switching between image and object representations. 
 
-In the image controls, we start by selecting the type of image data to show. Beneath that there is an option to hide selected channels in the image segmentation, then a gamma control for the original image. Since this is an 8-bit image with values between 0 and 255, we apply the transform 
+#### Image data controls 
+
+In the image controls (left panel), we start by selecting the type of image data to show. Beneath that there is an option to hide selected channels in the segmentation, then a gamma control for the original image. Since this is an 8-bit image with values between 0 and 255, we apply the transform 
 
 adjusted intensity = round(255*pow((original intensity)/255,gamma))
 
 A small pause will be experienced on first use; we can then instantly switch between the original and tranformed image. The gamma is selected on a log scale, so that positive values will accentuate stronger signal, while negative values will accentuate the regions of weaker signal.
 
-The remainder of the image selection allows a slice to be selected (slider on left, vertical arrow keys) and the option to show the selected slice or the image above or below the slice only, or to show all slices but indicate the selected slice by flickering it on and off.
+Below the gamma adjustment control is the slice display and selection. The slider on the left controls the selected slice (step through with vertical arrow keys). There are options to show the selected slice, all the slices above or below, or to show all slices but indicate the selected slice by flickering it on and off. These controls are designed to easily look at the data in slice view but place it in 3D context.
 
-In the object data controls (right), the top panel controls which classes and which data elements to show. For a particular data element and class (such as class 2 meshes) the data is displayed only when the the buttons for the element, class and element+class are all active. The element+class buttons can thus be used for fine-grained control, although by default they are on and control is deferred to the separate class and element controls. 
+The final section (Slice axis) allows for reslicing the data along different axes. The viewer works by displaying a set of 2D slices in 3D, which is useful for some purposes but gives a limited 3D representation from some angles. The original data is expected to be sliced along the z axis (so that each 2d slice corresponds to a single z value). Clicking on X,Y, or Z will regenerate the slices of the current image so that this axis changes accordingly. The "Fixed" option will propogate this choice to each new image stack shown. The "Auto" option will reslice the displayed image stack automatically based on the viewing angle. This will avoid the "looking along the slice" effect, but at the cost of intermittant pauses when rotating the image, since the reslicing operation takes a noticable time. 
 
-The panel below allows the objects to be shown to be filtered by size (pre-defined voxel thresholds for each class), whether they are included in tracks, or whether they are included in the current selection of tracks. This selection (by track id) can be edited by the controls directly below; the id of a chosen track can be obtained using the "Track Id" option above. The "Parent" and "Children" options allow exploration of structure hierachy: if a hierarchy of classes has been defined, each track is associated with a "parent" track which is the track in the parent class which has the most aggregate contact over time. These buttons allow the parent or child tracks of a selected track to be shown when they otherwise would not (when the "Selected" filter is on). Filters can be applied to individual classes if required.
 
-The "Object Colouring" control defaults to colouring by class (using a pre-defined colour associated with each class). Other options color using a pseudo-random colour map based on the object, node or track id, showing the effects of the object splitting and tracking algorithms. The "Node" and "Track" options only differ when showing branched tracks. 
+#### Object data controls 
+
+In the object data controls (right panel), the top section controls which classes and which data elements to show. For a particular data element and class (such as class 2 meshes) the data is displayed only when the the buttons for the element, class and element+class are all active. The element+class buttons can thus be used for fine-grained control, although by default they are on and control is deferred to the separate class and element controls. 
+
+The section below allows the objects to be shown to be filtered by size (pre-defined voxel thresholds for each class), whether they are included in tracks, or whether they are included in the currently selected tracks. This track selection (by track id) can be edited by the controls directly below; the id of a chosen track can be obtained using the "Track Id" option above. The "Parent" and "Children" options allow exploration of structure hierachy: if a hierarchy of classes has been defined, each track is associated with a "parent" track which is the track in the parent class which has the most aggregate contact over time. These buttons allow the parent or child tracks of a selected track to be shown when they otherwise would not (when the "Selected" filter is on). Filters can be applied to individual classes if required.
+
+The "Object Colouring" control defaults to colouring by class (using a pre-defined colour associated with each class). Other options color using a pseudo-random colour map based on the object, node or track id, showing the effects of the object splitting and tracking algorithms. The "Node" and "Track" options only differ when showing branched tracks.
+
+#### Hidden Controls
+
+A few additional features are accessible only by key control. These are mostly for special purposes and often requiring code edits to be useful.
+
+p: take a screenshot of visualiser window
+
+P: toggle recording (when recording, a screen shot of the visualiser window is taken every frame, suitable for producing a movie)
+
+\: Redo the alpha mask on the current image. Alpha masks translate the black background into transparancy. Occassionally the algorithm does not work correctly, leaving artefacts. This control is used to try again until it works.
+
+space bar: show current camera position and view point
+
+l: reset the camera to a hard-coded position and view point (can be set using info from space bar)
+
+X,Y,Z,R: toggle constant rotation of view around corresponding axis, or a hardcoded axis for R
+
+T: initiate a hard-coded timed routine (rotation and recording)
+
+
 
 
 

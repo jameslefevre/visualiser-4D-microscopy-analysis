@@ -1,3 +1,6 @@
+// the main code for loading and setting up the image and object data once selected
+// Significant work is also delegated to constructors and other class methods
+
 
 // raw, segmented, prob, blended ; objects, tracks
 boolean[] image_load_check = {false,false,false,false};

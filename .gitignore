@@ -2,3 +2,7 @@
 
 # folder for explicitly ignored files
 local*
+
+# my data selection files, no need to share except for one example
+vis4D/data/data_selections/*
+!vis4D/data/data_selections/lastLoaded.json

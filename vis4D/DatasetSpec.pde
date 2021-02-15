@@ -337,6 +337,7 @@ DatasetSpec loadSpecFromJSON(String path){
 
 ArrayList<String> getStackNamesBetweenStrings(String folderPath, int[] stackNums, String[] bookendStrings){
   assert(bookendStrings.length==2);
+  println("calling getStackNamesBetweenStrings with \n folderPath = " + folderPath +" \n bookendStrings = " + bookendStrings[0] + ", " + bookendStrings[1]);
   ArrayList<String> stackNames = new ArrayList<String>(); // new String[stackNums.length];
   for (int ii=0;ii<stackNums.length;ii++) stackNames.add(null);
   IntList stacks = new IntList(stackNums);

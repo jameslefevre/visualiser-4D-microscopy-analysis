@@ -62,6 +62,9 @@ int timeRangeRadius = 1; // linked to addTextfield("timeRange")
 Textfield timeRange;
 Textfield[] timeStepPositionOffsets = new Textfield[3];
 
+Textfield[] cameraPosition = new Textfield[3];
+Textfield[] cameraTarget = new Textfield[3];
+
 // run first time with makeControls==true
 // existing controls are drawn automatically,
 // so on subsequent iterations run with makeControls==false,
@@ -70,7 +73,8 @@ void gui(boolean makeControls) {
   // ************************************************** GUI LAYOUT PARAMETERS **************************************************************
   int x0=20, x1=220, x_subsetSlices = 70, x_reslice = 70;
   int y_imageSelect = 30, y_showImages=200, y_imageDisplayMode=260,  y_classesDisplayedCI=360,  y_objectTypesDisplayed = 285,
-  y_filter = 470, y_trackSelection = 545,  y_objectColourScheme = 630, y_currentSlice = 390, y_multiTimes = 720; // , y_classes = 400
+  y_filter = 470, y_trackSelection = 545,  y_objectColourScheme = 630, y_currentSlice = 390, y_multiTimes = 720;
+  // y_filter = 470, y_trackSelection = 545,  y_objectColourScheme = 630, y_currentSlice = 390, y_multiTimes = 680, y_camera = 750; // , y_classes = 400 // for start of camera position stuff
   
   
   int x_showGammaTransform=x_subsetSlices;
@@ -568,6 +572,7 @@ void gui(boolean makeControls) {
         timeStepPositionOffsets[j] = standard_textfield("timeStepPositionOffsets_input_"+j,x1+50+40*j,y_multiTimes+30,35,15,new ControlFont(createFont("Arial",9))); 
       }
   }
+  
   if (!timeRange.isFocus() && !timeRange.getText().equals(Integer.toString(timeRangeRadius))){timeRange.setText(Integer.toString(timeRangeRadius));}
   for (int j=0; j<3; j++){
      if (!timeStepPositionOffsets[j].isFocus() && !timeStepPositionOffsets[j].getText().equals(Float.toString(dataset.positionOffSetForMultiTimesteps[j]))){
@@ -575,10 +580,38 @@ void gui(boolean makeControls) {
      }
   }
   
+// ******************************* GUI CONTROLS - CAMERA ****************************
+  
+  /*
+  text("Camera:", x1-15, y_camera+15);
+  text("LookAt:", x1-15, y_camera+35);
+  
+  
+  if (makeControls){     
+      for (int j=0; j<3; j++){
+        cameraPosition[j] = standard_textfield("cameraPosition_input_"+j,x1+30+45*j,y_camera,42,12,new ControlFont(createFont("Arial",9))); 
+        cameraTarget[j] = standard_textfield("cameraTarget_input_"+j,x1+30+45*j,y_camera+14,42,12,new ControlFont(createFont("Arial",9))); 
+      }
+  }
+  if (visualiser!=null && visualiser.cam!=null){
+    float[] camPos = visualiser.cam.getPosition();
+    float[] camTar = visualiser.cam.getLookAt();
+  
+    for (int j=0; j<3; j++){
+       if (!cameraPosition[j].isFocus()){
+         cameraPosition[j].setText(Float.toString(camPos[j]));
+       }
+       if (!cameraTarget[j].isFocus()){
+         cameraTarget[j].setText(Float.toString(camTar[j]));
+       }
+    }
+  }
+  */
+  
+// ******************************* FINALISE ****************************
   if (makeControls){
     // move any drop down lists to front in required order for visibility
     removeTrackSelection.bringToFront();
   }
-  
 }
    

@@ -11,8 +11,8 @@ public class Visualiser extends PApplet {
   boolean[] rotating = new boolean[3];
   boolean rotatingSpecial = false;
   int frameNum = 0;
-  int sequenceTimer = 0;
-  int sequenceTimerInit = 108;
+  int sequenceTimer = 0; // used to hard-code a sequence to record; sequenceTimerInit is the number of time steps to record, action(s) to take each step are encoded with condition sequenceTimer>0
+  int sequenceTimerInit = 30; // 108;
   boolean shiftIsPressed = false;
   boolean manualResliceCurrentImage = false;
   boolean showNodeContactMetrics = false;
@@ -51,7 +51,7 @@ public class Visualiser extends PApplet {
 
   public void draw() {
     sliceFlickerAlternator = !sliceFlickerAlternator;
-    sequenceTimer = sequenceTimer > 0 ? sequenceTimer-1 : 0;
+    // sequenceTimer = sequenceTimer > 0 ? sequenceTimer-1 : 0;
     // lights();
     // ambientLight(102, 102, 102);
     //ambientLight(255,255,255);
@@ -182,7 +182,7 @@ public class Visualiser extends PApplet {
     if (rotating[2]) {
       cam.rotateZ(incr);
     }
-    if (rotatingSpecial || sequenceTimer>0) {
+    if (rotatingSpecial) { //|| sequenceTimer>0
       cam.rotateX(specialRotateAxis[0]); 
       cam.rotateY(specialRotateAxis[1]); 
       cam.rotateZ(specialRotateAxis[2]);
@@ -194,7 +194,11 @@ public class Visualiser extends PApplet {
       saveGUIscreenshotAs.add("/data/james/image_data/LLS/movie_making/temp/control_frame_"+nf(frameNum, 6) + ".png");
       frameNum++;
     }
-  }
+    if (sequenceTimer>0){
+      currentImageNumSlider.setValue((currentImageNum+1)%dataset.imageDatasetsByTimeStep.size() + 0.01);
+      sequenceTimer -= 1;
+    }
+  } // end draw()
   
   boolean trackInSelectionOrRelated(Track tr){
     boolean sel = selectedTracks.contains(tr.id);
@@ -283,6 +287,7 @@ public class Visualiser extends PApplet {
 
     if (key == 'T') {
       sequenceTimer = sequenceTimerInit;
+      frameNum = 0;
     }
 
 

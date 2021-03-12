@@ -238,6 +238,7 @@ public class Visualiser extends PApplet {
   void resliceCurrentImage(boolean posDirection){
       ImageData im = dataset.imageDatasetsByTimeStep.get(dataset.timeSteps[currentImageNum]);
       if (im==null) return;
+      if (im.currentStack()==null) return;
       im.currentStack().changeAxis(posDirection);
       im.currentStack().alphaMask();
   }

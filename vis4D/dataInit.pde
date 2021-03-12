@@ -65,21 +65,27 @@ void dataSetup(){
   
   // aggregate segmentation pixel color counts across time; this is to allow hiding of channels
   dataset.segmentationColours = new HashMap<Integer,Integer>();
+  println("\nCounting voxels by colour:\n");
+  int tempCounter=0; 
   for (ImageData imDat : dataset.imageDatasetsByTimeStep.values()){
+    tempCounter++;
+    println("\n"+tempCounter);
     if (imDat.pixelColourCounts==null){continue;}
     for (int c : imDat.pixelColourCounts.keySet()){
+      print("  "+c+" : "+imDat.pixelColourCounts.get(c)+ ";");
       if (!dataset.segmentationColours.containsKey(c)){
         dataset.segmentationColours.put(c,imDat.pixelColourCounts.get(c));
       } else {
         dataset.segmentationColours.put(c,dataset.segmentationColours.get(c)+imDat.pixelColourCounts.get(c));
       }
     }
+    println("\n");
   }
   for (int c : dataset.segmentationColours.keySet()){println(c," : ",dataset.segmentationColours.get(c));} 
-  ArrayList<Integer> killColours = new ArrayList<Integer>(); killColours.add(0); // black pixels are always set to transparent
+  
+  ArrayList<Integer> killColours = new ArrayList<Integer>(); 
   for (int c : dataset.segmentationColours.keySet()){
-    if (dataset.segmentationColours.get(c) < ignoreSegmentationPixelCountsBelowThisThreshold){killColours.add(c);}
-    // this is a nasty hack to deal with stray pixels that really shouldn't be there
+    if (brightness(color(c))==0){killColours.add(c);} // remove background/zero brightness color(s) from list of those that can be switched on and off 
   }
   for (int c : killColours){dataset.segmentationColours.remove(c);}
   
@@ -90,7 +96,7 @@ void dataSetup(){
 } // end main data loading method
 
   
-// UNSAFE: going to assume format correct/ as expected at first, no checking
+// UNSAFE: going to assume format correct/ as expected, no checking
   // assume vertices come before the faces which use them
   HashMap<Integer, ObjectMesh> getObjectMeshes(String pth, float[] voxelDim, boolean unifiedVertexNumbering, PVector lightDirection) {
     String[] lines = loadStrings(pth);

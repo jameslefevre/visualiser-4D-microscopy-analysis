@@ -3,8 +3,7 @@ import peasy.*;
 import controlP5.*; // documentation: http://www.sojamo.de/controlP5
 
 float drawScalingFactor =  2;
-PVector lightDirection = new PVector(0,0,1); 
-int ignoreSegmentationPixelCountsBelowThisThreshold = 1000;
+PVector lightDirection = new PVector(0,0,1);
 
 String runMode = "setSpec"; // "setSpec", "loadData", "waitingForData",  "launchVis", "running"
 // set to "setSpec" to run data specification GUI, or "loadData" to bypass and launch with the default spec

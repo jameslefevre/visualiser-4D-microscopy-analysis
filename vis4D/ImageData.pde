@@ -103,12 +103,13 @@ class ImageData {
       String pth = sp.segFolderPath(ii,imageNumber);
       if (pth!=null && (new File(pth)).exists()) {
         imgCl[ii] = loadImageStack(pth,sp.slicePadNumber);
+        for (PImage sl : imgCl[ii].im){      
+          countPixelColours(sl,pixelColourCounts);
+          // print("slice "+(tempCounter++)+":  "); for (int ky : pixelColourCounts.keySet()) print(ky + ":" + pixelColourCounts.get(ky)+"; "); println();     
+        }
         imgCl[ii].alphaMaskMethod = "binary";
         imgCl[ii].alphaMask();
         println("Alpha-masked " + sp.stackName(imageNumber) +", seg "+  sp.segNames.get(ii) + " at " + second());
-        for (PImage sl : imgCl[ii].im){
-          countPixelColours(sl,pixelColourCounts);
-        }
       } else {
         println("No segmented image found at " + pth);
         return(false);
